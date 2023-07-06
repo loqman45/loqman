@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>وبسایت جمعیت دولت مستضعفین</title>
+	<meta charset="UTF-8">
+	<style>
+	  body {
+		font-family: Nazanin, sans-serif;
+		margin: 0;
+		padding: 0;
+		width: 95%; /* Set the width of the page to 90% of the screen size */
+		margin-left: auto; /* Center the page horizontally */
+		margin-right: auto;
+		border: none;
+
+	  }
+	  div.a {
+		  text-indent: 25px;
+	  }
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      nav li {
+        margin: 0 10px;
+      }
+
+      nav a {
+        display: block;
+        color: black;
+        padding: 10px;
+        text-decoration: none;
+      }
+
+      nav a:hover {
+        background-color: #f0eccf;
+      }
+
+		.box-list {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		}
+
+		.box {
+		width: calc((100% - 20px) / 2);
+		height: 300px;
+		margin-bottom: 20px;
+		border: 1px solid #ddd;
+		}
+
+		@media (max-width: 380px) {
+		.box {
+			width: 100%;
+		}
+		}
+
+		@media (min-width: 570px) {
+		.box {
+			width: calc((100% - 40px) / 3);
+		}
+		}
+
+		@media (min-width: 760px) {
+		.box {
+			width: calc((100% - 60px) / 4);
+		}
+		}
+
+		.load-more {
+		display: flex;
+		justify-content: center;
+		margin-top: 20px;
+		}
+
+		.load-more button {
+		padding: 10px 20px;
+		background-color: #007bff;
+		color: #fff;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		}
+
+	</style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="http://jedddi.ir/index.html">خانه</a></li>
+		<strong>
+        <li><a href="http://jedddi.ir/Projects.html">پروژه های ما</a></li>
+		</strong>
+        <li><a href="#">درباره ما</a></li>
+        <li><a href="http://jedddi.ir/ContactUs.html">تماس با ما</a></li>
+      </ul>
+    </nav>
+	<h1 align="center" style="font-family: IranNastaliq;">جمعیت دولت مستضعفین</h1>
+  </header>
+<!-- آی دی ریزالت را شاید حذف کردم شاید هم ماند خدا میداند -->
+  	<div id="result"></div>
+	<div class='box-list'>
+		<div class='box'> </div>
+	</div>
+	<footer class="footer">
+		<div class="load-more">
+			<button id='load-more-btn'>Load More</button>
+		</div>
+	</footer>
+	  <script>
+		const loadMoreBtn = document.getElementById('load-more-btn');
+		const boxList = document.querySelector('.box-list');
+		// میخواهم تعداد باکس ها را از ورودی آجاکس بگیرم
+		var currentBoxIndex;
+		var boxesPerLoad;
+		var count;
+		var result1 = {currentBoxIndex,boxesPerLoad,count};
+		const xhr = new XMLHttpRequest();
+		xhr.open('GET', 'Texts/OurProjects.json', true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.onload = function() {
+			if (xhr.status === 200) {
+				var data = xhr.responseText;
+				// خواستم اطلاعات را ذخیره کنم
+				const OurProjects = JSON.parse(data);
+// میخواهم بشمرم چندتا باکس باید در فانکشن های بعدی بسازم
+// با شمارش تعداد آکلاد به تعداد پروژه ها دسترسی پیدا میکنیم
+				var count = 0;
+				for (var i = 0; i < data.length; i++) {
+					if (data[i] === '{') {
+					count++;
+					}
+				}
+				document.getElementById('result').innerHTML = ' میزان نتایج برای جستجوی پروژه های ما' + count + 'میباشد. ';
+				count= 8;
+				var currentBoxIndex;
+				var boxesPerLoad = count;
+// مثلا عدد زیر 9 باشد مثلا عدد بالای 9 باشد و باقی مانده اعشاری داشته باشد
+				calculationOfHowManyBoxes = function(){
+					if (count<=9) {
+						result1.currentBoxIndex = count;
+						console.log(count);
+						result1.boxesPerLoad = 0;
+					} else if(count%9>0) {
+							var x = Math.floor(count/9) - 1;
+							var y = count%9;
+							result1.currentBoxIndex = 9;
+// مثلا عدد زیر 18 باشد و باقی مانده اعشاری داشته باشد
+							if (count<18) {
+								result1.boxesPerLoad = y;
+							} else {
+// مثلا عدد بالای 18 باشد و باقی مانده اعشاری داشته باشد
+								result1.boxesPerLoad = 9;
+// حالا باید هربار که لودمور زده میشود نه عدد کم کنم تا جایی که دیگر منفی نشود ادامه دهم
+								for (var i = x; i > 0; i--) {
+									result1.currentBoxIndex += 9
+								}
+							}
+// مثلا عدد بالای 9 باشد و باقی مانده نداشته باشد یعنی حداقل 18 است به بالا
+					} else {
+						result1.currentBoxIndex= 9;
+						var x = count/9 - 1;
+						for (var i = x; i > 0; i--) {
+							result1.currentBoxIndex += 9;
+						}
+					}
+				console.log(result1);
+				return result1;
+				};
+				
+			}
+			else {
+			document.getElementById('result').innerHTML = 'Error: ' + xhr.status;
+			}
+		};
+		xhr.send();
+		console.log(count);
+		console.log(result1.currentBoxIndex);
+		console.log(result1.boxesPerLoad);
+		loadMoreBtn.addEventListener('click', () => {
+			for (let i = result1.currentBoxIndex; i < result1.currentBoxIndex + result1.boxesPerLoad; i++) {
+			const box = document.createElement('div');
+			box.classList.add('box');
+			boxList.appendChild(box);
+			}
+			result1.currentBoxIndex += result1.boxesPerLoad;
+
+			// Scroll to the top of the footer
+			const footer = document.querySelector('.footer');
+			footer.scrollIntoView({ behavior: 'smooth' });
+		});
+
+
+	// Position the "Load More" button at the top of the footer
+		const loadMore = document.querySelector('.load-more');
+		const footer = document.querySelector('.footer');
+		const footerHeight = footer.offsetHeight;
+		const windowHeight = window.innerHeight;
+		const loadMoreHeight = loadMore.offsetHeight;
+
+		if (windowHeight >= footerHeight + loadMoreHeight) {
+			loadMore.style.marginTop = `${footerHeight}px`;
+		} else {
+			loadMore.style.position = 'absolute';
+			loadMore.style.bottom = '0';
+			loadMore.style.left = '0';
+			loadMore.style.width = '100%';
+		}
+      </script>
+</body>
